@@ -1,0 +1,75 @@
+# word_s2s.yaml
+## Where the samples will be written
+
+# Vocab Building
+## Where the samples will be written
+save_data: ./s2s_word_final2
+
+## Where the vocab(s) will be written
+src_vocab: ./s2s_word_final2/word_s2s.vocab.src
+tgt_vocab: ./s2s_word_final2/word_s2s.vocab.tgt
+share_vocab: True
+
+# Prevent overwriting existing files in the folder
+overwrite: True
+
+# Corpus opts:
+data:
+    train:
+        path_src: ./parallel_pseudo/sT/s2s_word_pos.train.src.txt
+        path_tgt: ./parallel_pseudo/sT/s2s_word_pos.train.tgt.txt
+        transforms: [inferfeats, filtertoolong]
+        weight: 1
+        
+    valid:
+        path_src: ./parallel_pseudo/w_pos/word_valid.src.txt.TAGGED.TAGGED
+        path_tgt: ./parallel_pseudo/original/word_valid.tgt.txt
+        transforms: [inferfeats]
+
+# Features options
+n_src_feats: 1  
+feat_merge: "mlp"
+feat_vec_size: 512
+src_feats_defaults: "x"
+
+# Transform options
+reversible_tokenization: "joiner"
+
+# Increase sequence length
+src_seq_length: 200  
+tgt_seq_length: 200  
+
+# Training
+
+save_model: ./s2s_word_final2/s2s_word_final2
+
+log_file: ./s2s_word_final2/log_final.txt
+
+# Stop training if it does not improve after n validations
+early_stopping: 10
+
+# Default: 5000 - Save a model checkpoint for each n
+# save_checkpoint_steps: 1000
+
+# To save space, limit checkpoints to last n
+keep_checkpoint: 5
+
+# Optimization
+learning_rate: 0.1
+
+batch_size: 64
+dropout: [0.3]  # LSTM models often use higher dropout rates
+
+# Train on a single GPU
+world_size: 1
+gpu_ranks: [0]
+
+# Number of training iterations
+train_steps: 30000
+
+# Model parameters for RNN LSTM
+encoder_type: brnn
+decoder_type: rnn
+rnn_type: LSTM
+rnn_size: 512  # Adjust this based on your model size and complexity
+rnn_num_layers: 3  # Adjust this based on model architecture
